@@ -1,0 +1,49 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="HandheldFriendly" content="True">
+	<title>ITSI Find</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+	<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+	<script>
+		setTimeout("location.reload(true);",5000);
+	</script>
+	<noscript>
+		<meta http-equiv="refresh" content="5"/>
+	</noscript>
+</head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="{% static 'concise.min.js' %}"></script>
+	<header class="siteHeader">
+	  <div class="container">
+		<div class="logo">
+		  <a href="{% url 'home' %}">
+			<img src="{% static 'images/logo.png' %}" alt="Logo" />
+		  </a>
+		</div>
+
+		{% include 'navbar.html' %}
+	  </div>
+	</header>
+
+
+	 <div class="masthead">
+	  <div class="container">
+		<h1 class="masthead-title">Find participant</h1>
+		<h2 class="masthead-subtitle">Map with the position of the searched participant</h2>
+	  </div>
+	</div>
+	<div class="container">
+		<div class="alert">
+			<g class="text">Participant not currently next to a sensor!</g>
+		</div>
+	</div>
+	
+	
+	{% include 'footer.html' %}
+    </body>
+</html>

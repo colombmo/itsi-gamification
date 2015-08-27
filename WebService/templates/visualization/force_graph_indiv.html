@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="HandheldFriendly" content="True">
+		<title>ITSI Force Graph</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+		<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+    </head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="{% static 'concise.min.js' %}"></script>
+	
+	<header class="siteHeader">
+	  <div class="container">
+		<div class="logo">
+		  <a href="{% url 'home' %}">
+			<img src="{% static 'images/logo.png' %}" alt="Logo" />
+		  </a>
+		</div>
+
+		{% include 'navbar.html' %}
+	  </div>
+	</header>
+
+
+	 <div class="masthead">
+	  <div class="container">
+		<h1 class="masthead-title">Interactions analytics</h1>
+		<h2 class="masthead-subtitle">Force directed graph with interactions between participants</h2>
+	  </div>
+	</div>
+
+	<script>
+	//Show full size details
+	var w = window,
+		d = document,
+		e = d.documentElement,
+		g = d.getElementsByTagName('body')[0],
+		x = w.innerWidth || e.clientWidth || g.clientWidth,
+		y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+		
+	var width = x - 50,
+		height = y - 70;
+		
+	var color = d3.scale.category20();
+
+	var force = d3.layout.force()
+		.charge(-300)
+		.linkDistance(function(d){ return 2000/Math.sqrt(d.value); })
+		.size([width, height]);
+
+	var svg = d3.select("body").append("svg")
+        .attr("viewBox", "0 0 " + width + " " + height )
+        .attr("preserveAspectRatio", "xMidYMid meet");
+	
+	svg.append("rect")
+		.attr("width", "100%")
+		.attr("height", "100%")
+		.attr("fill", "white");
+
+	var graph = JSON.parse('{{ results | safe }}')
+		
+	force
+	  .nodes(graph.nodes)
+	  .links(graph.links)
+	  .start();
+
+	var link = svg.selectAll(".link")
+	  .data(graph.links)
+	.enter().append("line")
+	  .attr("class", "link")
+	  .style("stroke-width", function(d) { return 0.8*Math.sqrt(Math.sqrt(d.value)); })
+		.attr("x1", function(d) { return d.source.x; })
+		.attr("y1", function(d) { return d.source.y; })
+		.attr("x2", function(d) { return d.target.x; })
+		.attr("y2", function(d) { return d.target.y; });
+		
+	var node = svg.selectAll(".node")
+	  .data(graph.nodes)
+	.enter().append("circle")
+	  .attr("class", "node")
+	  .attr("r", 5)
+	  .style("fill", function(d) { return d.color; })
+	  .call(force.drag)
+	  .attr("cx", function(d) { return d.x; })
+		.attr("cy", function(d) { return d.y; });
+		
+	var legend = svg.append("g")
+	  .attr("class", "legend");
+	  
+	var leg = legend.selectAll('.leg')
+		.data(graph.nodes)
+		.enter().append("rect")
+		.attr("class", "leg")
+		.attr("x", 0.05*width)
+		.attr("y", function(d, i){ return 30+i*20;})
+		.attr("width", 10)
+		.attr("height", 10)
+		.style("fill", function(d) { return d.color; })
+		
+	var lab = legend.selectAll('.lab')
+		.data(graph.nodes)
+		.enter().append("text")
+		.attr("class", "lab")
+		.attr("x", 0.05*width+15)
+		.attr("y", function(d, i){ return (i *  20)+40;})
+		.attr("width", 10)
+		.attr("height", 10)
+		.text(function(d) { return d.name; })
+		.style("font-size","80%");
+		
+	node.append("title")
+	  .text(function(d) { return d.name; });
+
+	force.on("tick", function() {
+	link.attr("x1", function(d) { return d.source.x; })
+		.attr("y1", function(d) { return d.source.y; })
+		.attr("x2", function(d) { return d.target.x; })
+		.attr("y2", function(d) { return d.target.y; });
+		
+	node.attr("cx", function(d) { return d.x; })
+		.attr("cy", function(d) { return d.y; });
+	});
+	</script>
+	
+	{% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/fluent-hc-4.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/httpclient-4.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/httpclient-cache-4.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/httpcore-4.3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/httpmime-4.3.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/ltkjava-1.0.0.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/ltkthingmagic.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/mercuryapi.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/swt.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/workspace/Reader_Controller/libs/swt-debug.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Moreno/Downloads/json-simple-1.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

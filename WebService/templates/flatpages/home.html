@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="HandheldFriendly" content="True">
+	<title>ITSI WebService</title>
+	{% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+	<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+</head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="{% static 'concise.min.js' %}"></script>
+		
+	<section class="homeBanner">
+		<div class="container">
+			<h1>ITSI</h1>
+			<h3 class="weight-light">A better networking experience.</h3>
+			
+			<!--<h3 class="weight-light">Give up the bloat. Stop wasting time. Increase your visibility.</h3>-->
+						
+			<div class="homeBanner-buttons">
+				<h3 class="weight-semibold">Select the event you are interested in:</h3>
+				<form class="form" method="get">
+					<div class="form-item">
+						<div id="dd" class="wrapper-dropdown-5 btn btn-large btn--borderWhite" tabindex="1">Choose event...
+							<ul class="dropdown">
+								{% for e in events %}
+								<li><a href="{% url 'participants' e.id %}">{{ e.name }}<p class="date">{{e.date }}</p></a></li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
+	
+	<script type="text/javascript">
+
+			function DropDown(el) {
+				this.dd = el;
+				this.initEvents();
+			}
+			DropDown.prototype = {
+				initEvents : function() {
+					var obj = this;
+
+					obj.dd.on('click', function(event){
+						$(this).toggleClass('active');
+						event.stopPropagation();
+					});	
+				}
+			}
+
+			$(function() {
+
+				var dd = new DropDown( $('#dd') );
+
+				$(document).click(function() {
+					// all dropdowns
+					$('.wrapper-dropdown-5').removeClass('active');
+				});
+
+			});
+
+		</script>
+	
+	<section class="homeShowcase">
+	  <div class="container">
+		<h2 class="homeHeading">What's this?</h2>
+		<p class="homeSubheading">Overview</p>
+		<p>
+		ITSI (Indoor Tracking of Social Interactions) is a technology developed to help users experience better and more efficient networking events.
+		
+		It consists in three main applications:
+		<ul>
+			<li> This web application allowing people to find each other in the room based on the proximity to tables, and giving some real-time analytics methods; </li>
+			<li> A global interface (shown on a screen at the event) where the position of all of the people is shown (see <a href="#gamification">Gamification</a>);</li>
+			<li> Some post-event analytics to help event organizers getting useful informations to provide always better events.</li>
+		</p>
+		<p class="homeSubheading" id="gamification">Gamification</p>
+		<p>
+		By tracking users' position at the event, their interactions with other users can be tracked. Based on the number of interactions, time passed with people and interactions with members of other groups (groups are formed by people with the same main interest); we can assign a score to users, indicating their <i>success</i> at the event.
+		<br/>
+		In the big screen where everybody's position can be seen, each user is represented by a slice of pie with a size dependent on their score and their initials (the first 3 users of the leaderboard get full names!). So
+		<strong>the higher the score, the higher the visibility at the event.</strong>
+		</p>
+	  </div>
+	</section>
+	
+	{% include 'footer.html' %}
+</body>
+</html>

@@ -1,0 +1,66 @@
+{% load render_table from django_tables2 %}
+<!doctype html>
+<html>
+    <head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="HandheldFriendly" content="True">
+		<title>ITSI Search</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+		<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+    </head>
+	<body>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="{% static 'concise.min.js' %}"></script>
+		<header class="siteHeader">
+		  <div class="container">
+			<div class="logo">
+			  <a href="{% url 'home' %}">
+				<img src="{% static 'images/logo.png' %}" alt="Logo" />
+			  </a>
+			</div>
+
+			{% include 'navbar.html' %}
+		  </div>
+		</header>
+
+
+		 <div class="masthead">
+		  <div class="container">
+			<h1 class="masthead-title">Search</h1>
+
+			<h2 class="masthead-subtitle">Find participants at the event.</h2>
+		  </div>
+		</div>
+		<div class="container">
+			<main class="documentation">
+				<div class="documentation-sidebar">
+					<nav class="nav-responsive-center nav-responsive-text">
+						<ul>
+						<li class="header">Event {{ event }}</li>
+							<a href="{% url 'home' %}">
+								<li >Change event</li>
+							</a>
+						</ul>
+					</nav>
+				</div>
+				<div class="documentation-content">
+					<form method="get" class="form form-inline">
+						<h2>Filter list</h2>
+						<div class="form-item">
+							{{ filter.form.as_p }}
+							<input type="submit" class="submit"/>
+						</div>
+					</form>
+					<div class="table-responsive">
+						{% render_table table %}
+					</div>
+				</div>
+			</main>
+		</div>
+		
+	{% include 'footer.html' %}
+	</body>
+</html>

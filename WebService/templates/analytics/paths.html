@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="HandheldFriendly" content="True">
+		<title>ITSI Paths</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+		<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+    </head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="{% static 'concise.min.js' %}"></script>
+	
+	<header class="siteHeader">
+	  <div class="container">
+		<div class="logo">
+		  <a href="{% url 'home' %}">
+			<img src="{% static 'images/logo.png' %}" alt="Logo" />
+		  </a>
+		</div>
+
+		{% include 'navbar.html' %}
+	  </div>
+	</header>
+
+
+	 <div class="masthead">
+	  <div class="container">
+		<h1 class="masthead-title">Post-event</h1>
+		<h2 class="masthead-subtitle">Most taken paths by participants inside the room</h2>
+	  </div>
+	</div>
+	
+	{% include 'post_event.html' %}
+	
+	<div class="svg">
+	</div>
+	
+	<script>
+	//Show full size details
+	var w = window,
+		d = document,
+		e = d.documentElement,
+		g = d.getElementsByTagName('body')[0],
+		x = w.innerWidth || e.clientWidth || g.clientWidth,
+		y = w.innerHeight|| e.clientHeight|| g.clientHeight;	
+	var width = x - 50,
+		height = y - 50;
+		
+	if (width<height){
+		width = height*1.5
+	}
+	var svg = d3.select(".svg").append("svg")
+            .attr("viewBox", "0 0 " + width + " " + height )
+            .attr("preserveAspectRatio", "xMidYMid meet");
+	
+	svg.append("rect")
+		.attr("width", "100%")
+		.attr("height", "100%")
+		.attr("fill", "white");
+
+	var res = JSON.parse('{{ results | safe }}')
+
+	var maxPath = d3.max(res.paths, function(d){return d.value});
+	
+	var paths = svg.selectAll(".paths")
+					.data(res.paths)
+					.enter()
+					.append("path")
+					.attr("d", function(d) {
+					  return draw_curve(width*res.tables[d.source].x/100, height*res.tables[d.source].y/100, width*res.tables[d.target].x/100, height*res.tables[d.target].y/100);
+					})
+					/*.append("line")
+					.attr("x1", function(d){return width*res.tables[d.source].x/100})
+					.attr("y1", function(d){return height*res.tables[d.source].y/100})
+					.attr("x2", function(d){return width*res.tables[d.target].x/100})
+					.attr("y2", function(d){return height*res.tables[d.target].y/100})*/
+					.style("stroke", "gray")
+					.style("stroke-width", function(d){return 1+29*d.value/maxPath})
+					.style("fill", "none");
+	
+	var tables = svg.selectAll(".tables")
+					.data(res.tables)
+					.enter()
+					.append("circle")
+	tables
+		.attr("cx", function(d){return width*d.x/100})
+		.attr("cy", function(d){return height*d.y/100})
+		.attr("r", 20*width/1600)
+		.style("fill", "black");
+		
+	function draw_curve(Ax, Ay, Bx, By) {
+
+		var M = 150;
+		// side is either 1 or -1 depending on which side you want the curve to be on.
+		// Find midpoint J
+		var Jx = Ax + (Bx - Ax) / 2
+		var Jy = Ay + (By - Ay) / 2
+
+		// We need a and b to find theta, and we need to know the sign of each to make sure that the orientation is correct.
+		var a = Bx - Ax
+		var asign = (a < 0 ? -1 : 1)
+		var b = By - Ay
+		var bsign = (b < 0 ? -1 : 1)
+		var theta = Math.atan(b / a)
+
+		// Find the point that's perpendicular to J on side
+		var costheta = asign * Math.cos(theta)
+		var sintheta = asign * Math.sin(theta)
+
+		// Find c and d
+		var c = M * sintheta
+		var d = M * costheta
+
+		// Use c and d to find Kx and Ky
+		var Kx = Jx - c
+		var Ky = Jy + d
+
+		return "M" + parseInt(Ax,10) + "," + parseInt(Ay,10) +
+			   "Q" + parseInt(Kx,10) + "," + parseInt(Ky,10) +
+			   " " + parseInt(Bx,10) + "," + parseInt(By,10)
+	}
+	</script>
+	
+	{% include 'footer.html' %}
+</body>
+</html>

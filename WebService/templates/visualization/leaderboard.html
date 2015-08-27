@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="HandheldFriendly" content="True">
+		<title>ITSI Leaderboard</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'concise.min.css' %}" />
+		<link rel="stylesheet" type="text/css"	href="{% static 'helper.css' %}" />
+    </head>
+<body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+	<script src="{% static 'concise.min.js' %}"></script>
+	
+	<header class="siteHeader">
+	  <div class="container">
+		<div class="logo">
+		  <a href="{% url 'home' %}">
+			<img src="{% static 'images/logo.png' %}" alt="Logo" />
+		  </a>
+		</div>
+		
+		{% include 'navbar.html' %}
+	  </div>
+	</header>
+
+
+	 <div class="masthead">
+	  <div class="container">
+		<h1 class="masthead-title">Leaderboard</h1>
+		<h2 class="masthead-subtitle">Overview of points distribution for each participant</h2>
+	  </div>
+	</div>
+		
+	<div class="container svg" style="background-color:white">
+		<div style="margin-left:2%; padding-top: 20px;">
+			<h3>Legend</h3>
+			<ul style="margin-left:3%">
+			<li class="legend" id="interactions">Number of interactions</li>
+			<li class="legend" id="otherGroup">Bonus for interactions with other groups</li>
+			</ul>
+			<h3> Leaderboard </h3>
+		</div>
+	</div>
+		
+	<script>
+	var data = JSON.parse('{{ results | safe }}');
+	var max = {{ max }};
+	
+	var width = document.getElementsByClassName("svg")[0].offsetWidth;
+	var textSize = "100%";
+	var rectHeight = 30;
+	
+	if (width <= 500){
+		textSize = "60%";
+		rectHeight = 15;
+	}
+	
+	
+	var height = data.length*(rectHeight+4);
+	var textWidth = 0.36*width;
+	var maxWidth = 0.6*width;
+	
+	var svg = d3.select(".svg").append("svg")
+            .attr("width", "100%")
+            .attr("height", 20+height)
+			.attr("style", "margin : auto auto;");
+			
+	svg.append("rect")
+		.attr("style","x:auto")
+		.attr("width", width)
+		.attr("height","100%")
+		.attr("fill","white");
+	
+	var text = svg.selectAll(".label")
+				.data(data)
+				.enter().append("text")
+				.attr("class", "label")
+				.attr("fill", "black")
+				.attr("x", 0.03*width)
+				.attr("y", function(d,i){return (i+1)*height/data.length})
+				.style("font-size", textSize)
+				.text(function(d,i){return (i+1)+". "+ d.key});
+	
+	var rect1 = svg.selectAll(".rect1")
+					.data(data)
+					.enter().append("rect")
+					.attr("class","rect1")
+					.attr("fill","red")
+					.attr("x",textWidth)
+					.attr("y", function(d,i){return i*height/data.length+rectHeight/2})
+					.attr("width", function(d){return (d.pop1/max)*maxWidth})
+					.attr("height", rectHeight)
+					
+					
+	var rect2 = svg.selectAll(".rect2")
+					.data(data)
+					.enter().append("rect")
+					.attr("class","rect2")
+					.attr("fill","orange")
+					.attr("x",function(d){return textWidth+(d.pop1*maxWidth)/max})
+					.attr("y", function(d,i){return i*height/data.length+rectHeight/2})
+					.attr("width", function(d){return (d.pop2/max)*maxWidth})
+					.attr("height", rectHeight)
+	</script>
+	
+	{% include 'footer.html' %}
+</body>
+</html>
